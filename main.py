@@ -5,6 +5,28 @@ from dbconnector import DBConnector, PokemonElement
 import imageRecognition
 from blueStackController import BlueStackController
 import argparse
+import time
+
+class reading():
+    def __init__(self, nr, lvl, hp) -> None:
+        self.nr = nr
+        self.lvl = lvl
+        self.hp = hp
+    
+    def compare(self, reading):
+        if self.compareNr(reading) and self.compareLvl(reading) and self.hp == reading.hp:
+            return True
+        return False
+
+    def compareNr(self, reading):
+        if self.nr == reading.nr:
+            return True
+        return False
+    
+    def compareLvl(self, reading):
+        if self.lvl == reading.lvl:
+            return True
+        return False
 
 def loadConfig(path):
     with open(path, "r") as jsonfile:
@@ -18,6 +40,28 @@ def rebuild_database():
     for pokemon in pokemonList:
         db.add(PokemonElement(pokemon["id"], pokemon["species"]["name"], 0, 0))
     print("done")
+
+def registerBoxes(bluestackcontroller:BlueStackController):
+    lastPokemon = reading(0,0,0)
+    currentPokemon = reading(0,0,1)
+    while not lastPokemon.compare(currentPokemon):
+        lastPokemon = currentPokemon
+        pokemon = readPokemon(bluestackcontroller)
+        currentPokemon = reading(pokemon[0], pokemon[1], pokemon[2])
+        time.sleep(1)
+        bluestackcontroller.nextPokemon()
+        time.sleep(1)
+
+def readPokemon(bluestackcontroller:BlueStackController):
+    bluestackcontroller.setForeGround()
+    bluestackcontroller.screenshot()
+    result = bluestackcontroller.renameScreenshot("screenshot.png")
+    if not result:
+        print("renaming screenshot timed out")
+        exit()
+    data = imageRecognition.readBluestacks()
+    bluestackcontroller.deleteScreenshot()
+    return data
 
 if __name__=="__main__":
     # --------------------------argument parser options------------------------
@@ -43,9 +87,4 @@ if __name__=="__main__":
 
     controller = BlueStackController()
     controller.setForeGround()
-    controller.screenshot()
-    import time
-    time.sleep(1)
-    controller.renameScreenshot("screenshot.png")
-    print(imageRecognition.readBluestacks())
-    controller.deleteScreenshot()
+    registerBoxes(controller)
