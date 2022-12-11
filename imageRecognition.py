@@ -67,7 +67,7 @@ def readImage(img, calibration=False):
 
 def readBluestacks(calibration=False):
     path = os.path
-    img = Image.open(path.join(path.dirname(__file__), "data", "test.png"))
+    img = Image.open(path.join(path.dirname(__file__), "data", "screenshot", "screenshot.png"))
     return readImage(img, calibration)
 
 def run(calibration=False):
