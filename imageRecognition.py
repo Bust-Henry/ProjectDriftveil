@@ -1,73 +1,82 @@
-from PIL import ImageOps, ImageGrab, ImageEnhance
+from PIL import ImageOps, ImageEnhance, Image
 import pytesseract
-import cv2
-import win32gui
+import calibrationGUI
+import json
+import os
 import re
-import numpy
 
-toplist, winlist = [], []
-def enum_cb(hwnd, results):
-    winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
-win32gui.EnumWindows(enum_cb, toplist)
+def calibrate(img):
+    jsonpath = os.path.join(os.path.dirname(__file__), os.environ["calibration"])
+    with open(jsonpath, "r") as jsonfile:
+        calibration = json.load(jsonfile)
+    with open(jsonpath, "w") as jsonfile:
+        no, lvl,stats = calibrationGUI.run(img)
+        calibration["lvl"] = list(lvl)
+        calibration["no"] = list(no)
+        calibration["stats"] = list(stats)
+        json.dump(calibration, jsonfile, indent=4)
 
+def getCalibration():
+    jsonpath = os.path.join(os.path.dirname(__file__), os.environ["calibration"])
+    with open(jsonpath, "r") as jsonfile:
+        return json.load(jsonfile)
 
-def screenshotBluestack():
-    bluestack = [(hwnd, title) for hwnd, title in winlist if 'bluestacks' in title.lower()]
-    # just grab the hwnd for first window matching bluestack
-    bluestack = bluestack[0]
-    hwnd = bluestack[0]
+def remove_transparency(im, bg_colour=(255, 255, 255)):
 
-    win32gui.SetForegroundWindow(hwnd)
-    bbox = win32gui.GetWindowRect(hwnd)
-    img = ImageGrab.grab(bbox)
-    img = ImageEnhance.Contrast(ImageOps.grayscale(img)).enhance(10)
-    return img
+    # Only process if image has transparency (http://stackoverflow.com/a/1963146)
+    if im.mode in ('RGBA', 'LA') or (im.mode == 'P' and 'transparency' in im.info):
 
-def quadrantImage(img) -> list:
-    w, h = img.size
-    split = []
-    split.append(img.crop((20,300,w/3,h/2))) # top left
-    split.append(img.crop((w/2.1,0,w-150,h/12))) # top right
-    split.append(img.crop((0,h/2,w/2,h))) # bottom left
-    split.append(img.crop((w/2,h/2,w,h))) # bottom right
-    split[0].show()
-    split[1].show()
-    return split
+        # Need to convert to RGBA if LA format due to a bug in PIL (http://stackoverflow.com/a/1963146)
+        alpha = im.convert('RGBA').split()[-1]
 
-def readBluestack():
-    no = None
-    lvl = None
-    Stats = []
-    gray = screenshotBluestack()
-    w, h = gray.size
-    pokenr = pytesseract.image_to_string(gray.crop((20, 350, w-350, h-435)))
-    idNo = pytesseract.image_to_string(gray.crop((310, 770, w-40, h-20)))
-    return pokenr, idNo
+        # Create a new background image of our matt color.
+        # Must be RGBA because paste requires both images have the same format
+        # (http://stackoverflow.com/a/8720632  and  http://stackoverflow.com/a/9459208)
+        bg = Image.new("RGBA", im.size, bg_colour + (255,))
+        bg.paste(im, mask=alpha)
+        return bg
 
-def readImage(img):
-    image = cv2.imread(img)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    return pytesseract.image_to_string(gray)
+    else:
+        return im
 
-def improveReadablility(img):
-    cv_img = numpy.array(img)
-    _,thresh1 = cv2.threshold(cv_img,100,255,cv2.THRESH_BINARY) 
-    return thresh1
+def readImage(img, calibration=False):
+    # better readability options:
+    # convert image to grayscale
+    img = ImageOps.grayscale(img)
+    # enhance contrast 10x
+    img = ImageEnhance.Contrast(img).enhance(10)
+    # remove alpha channel
+    img = remove_transparency(img)
+    # if calibration is needed, run calibrate function
+    if calibration:
+        calibrate(img)
+    # fetch area calibration
+    calibration = getCalibration()
+    # crop the image in readable parts
+    lvlimg = img.crop(tuple(calibration["lvl"]))
+    # invert the lvlimg to get black text on white background
+    lvlimg = ImageOps.invert(lvlimg)
+    noimg = img.crop(tuple(calibration["no"]))
+    statsimg = img.crop(tuple(calibration["stats"]))
+    # read only digits in the 3 images
+    no = re.sub('\D','', pytesseract.image_to_string(noimg))
+    lvl = re.sub('\D','', pytesseract.image_to_string(lvlimg))
+    stats = re.sub('\D','', pytesseract.image_to_string(statsimg))
+    # return results
+    return no, lvl, stats
 
-"""
-@returns tuple of pokemon pokedex number, level
-"""
-def readPokemonStats():
-    imageParts = quadrantImage(screenshotBluestack())
-    # number is the only integer in the top left of the picture
-    number = re.sub('\D','', pytesseract.image_to_string(imageParts[0]))
-    level = re.sub('\D','', pytesseract.image_to_string(imageParts[1]))
-    return number, level
-    	
+def readBluestacks(calibration=False):
+    path = os.path
+    img = Image.open(path.join(path.dirname(__file__), "data", "test.png"))
+    return readImage(img, calibration)
 
+def run(calibration=False):
+    lvl, no, stats = readBluestacks(calibration=calibration)
+    print("no: ", no, " lvl: ", lvl, " stats: ", stats)
 
 if __name__=="__main__":
-    print(readPokemonStats())
+    run()
+    
 
 """
 first no. =/= -> continue
