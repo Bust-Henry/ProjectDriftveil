@@ -3,6 +3,9 @@ import json
 import dexScraper
 from dbconnector import DBConnector, PokemonElement
 import imageRecognition
+from blueStackController import BlueStackController
+import PIL
+
 def loadConfig(path):
     with open(path, "r") as jsonfile:
         return json.load(jsonfile)
@@ -25,4 +28,13 @@ if __name__=="__main__":
     for pokemon in pokemonList:
         db.add(PokemonElement(pokemon["id"], pokemon["species"]["name"], 0, 0))
     print("done")"""
-    imageRecognition.run()
+    controller = BlueStackController()
+    controller.setForeGround()
+    controller.screenshot()
+    import time
+    time.sleep(2)
+    controller.renameScreenshot("screenshot.png")
+    print(imageRecognition.readBluestacks())
+    print("screenshot taken, analyze...")
+    time.sleep(3)
+    controller.deleteScreenshot()
