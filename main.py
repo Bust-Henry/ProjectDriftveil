@@ -25,4 +25,4 @@ if __name__=="__main__":
     for pokemon in pokemonList:
         db.add(PokemonElement(pokemon["id"], pokemon["species"]["name"], 0, 0))
     print("done")"""
-    print(imageRecognition.readPokemonNumber())
+    imageRecognition.run()
