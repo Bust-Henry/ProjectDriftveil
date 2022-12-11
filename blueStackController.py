@@ -25,6 +25,10 @@ class BlueStackController():
     def screenshot(self):
         pyautogui.hotkey('ctrl','shift','s')
 
+    def clearScreenshots(self):
+        for file in os.listdir(self.screenshotPath):
+            os.remove(file)
+    
     def renameScreenshot(self, name, timeout=5):
         startTimestamp = datetime.now()
         renamed = False
