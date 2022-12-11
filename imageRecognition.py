@@ -22,7 +22,6 @@ def getCalibration():
         return json.load(jsonfile)
 
 def remove_transparency(im, bg_colour=(255, 255, 255)):
-
     # Only process if image has transparency (http://stackoverflow.com/a/1963146)
     if im.mode in ('RGBA', 'LA') or (im.mode == 'P' and 'transparency' in im.info):
 
