@@ -1,7 +1,7 @@
-import imageRecognition
 import pyautogui
 import win32gui
 import os
+from datetime import datetime
 
 class BlueStackController():
     toplist, winlist = [], []
@@ -25,14 +25,26 @@ class BlueStackController():
     def screenshot(self):
         pyautogui.hotkey('ctrl','shift','s')
 
-    def renameScreenshot(self, name):
-        for file in os.listdir(self.screenshotPath):
-            if file.endswith(".png"):
-                try:
-                    os.rename(os.path.join(self.screenshotPath, file), os.path.join(self.screenshotPath, name))
-                except FileExistsError:
-                    self.deleteScreenshot()
-                    self.renameScreenshot(name)
+    def renameScreenshot(self, name, timeout=5):
+        startTimestamp = datetime.now()
+        renamed = False
+        while not renamed:
+            try:
+                for file in os.listdir(self.screenshotPath):
+                    if file.endswith(".png"):
+                        try:
+                            os.rename(os.path.join(self.screenshotPath, file), os.path.join(self.screenshotPath, name))
+                            renamed = True
+                        except FileExistsError:
+                            self.deleteScreenshot()
+                            self.renameScreenshot(name)
+                            renamed = True
+            except FileNotFoundError:
+                currentTimestamp = datetime.now()
+                delta = startTimestamp - currentTimestamp
+                if delta.seconds > timeout:
+                    return False
+        return True
 
     def deleteScreenshot(self):
         try:
@@ -40,7 +52,9 @@ class BlueStackController():
         except FileNotFoundError:
             print("screenshot wasn't deleted, becaus it doesnt exist")
 
-
+    def nextPokemon(self):
+        pyautogui.press('A')
+    
     def countPokemon(self):
         lastPokemonStats = None
         currentPokemonStats = None
@@ -54,5 +68,5 @@ class BlueStackController():
 
 if __name__=="__main__":
     controller = BlueStackController()
-    controller.setForeGround()
-    controller.deleteScreenshot()
+
+    controller.nextPokemon()
