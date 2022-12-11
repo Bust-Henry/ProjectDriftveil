@@ -28,8 +28,12 @@ class BlueStackController():
     def renameScreenshot(self, name):
         for file in os.listdir(self.screenshotPath):
             if file.endswith(".png"):
-                os.rename(os.path.join(self.screenshotPath, file), os.path.join(self.screenshotPath, name))
-    
+                try:
+                    os.rename(os.path.join(self.screenshotPath, file), os.path.join(self.screenshotPath, name))
+                except FileExistsError:
+                    self.deleteScreenshot()
+                    self.renameScreenshot(name)
+
     def deleteScreenshot(self):
         try:
             os.remove(os.path.join(self.screenshotPath, "screenshot.png"))
