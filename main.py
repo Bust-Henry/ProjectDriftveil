@@ -27,6 +27,9 @@ class reading():
         if self.lvl == reading.lvl:
             return True
         return False
+    
+    def toString(self):
+        return f"nr: %s, lvl: %s, hp: %s" %(self.nr, self.lvl, self.hp)
 
 def loadConfig(path):
     with open(path, "r") as jsonfile:
@@ -41,16 +44,26 @@ def rebuild_database():
         db.add(PokemonElement(pokemon["id"], pokemon["species"]["name"], 0, 0))
     print("done")
 
-def registerBoxes(bluestackcontroller:BlueStackController):
+def registerBoxes(bluestackcontroller:BlueStackController, con:DBConnector):
     lastPokemon = reading(0,0,0)
     currentPokemon = reading(0,0,1)
-    while not lastPokemon.compare(currentPokemon):
-        lastPokemon = currentPokemon
+    pokemonToRegister = []
+    while True:
         pokemon = readPokemon(bluestackcontroller)
         currentPokemon = reading(pokemon[0], pokemon[1], pokemon[2])
         time.sleep(1)
         bluestackcontroller.nextPokemon()
         time.sleep(1)
+        if not currentPokemon.compare(lastPokemon):
+            pokemonToRegister.append(currentPokemon)
+            print(currentPokemon.toString())
+            lastPokemon = currentPokemon
+            continue
+        else:
+            break
+    for pokemon in pokemonToRegister:
+        con.registerPokemon(pokemon.nr)
+    bluestackcontroller.clearScreenshots()
 
 def readPokemon(bluestackcontroller:BlueStackController):
     bluestackcontroller.setForeGround()
@@ -68,6 +81,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-r','--rebuild', action='store_true', help="rebuild the pokemon database")
     parser.add_argument('-c','--calibrate', action='store_true', help="calibrate the areas of text")
+    parser.add_argument('--clearRegistered', action='store_true', help="clears all registered pokemon")
     args = parser.parse_args()
 
     # --------------------------environment variables------------------------
@@ -80,11 +94,16 @@ if __name__=="__main__":
         os.environ[item[0]] = item[1]
     
     # ------------------ Start Script -------------------
+    con = DBConnector(os.environ.get("dbpath"))
 
     # if script startet with --rebuild flag, the database will be rebuilt.
     if args.rebuild:
         rebuild_database()
+    if args.clearRegistered:
+        con.clearRegisteredPokemon()
+        print("registered pokemon cleared")
+        exit()
 
     controller = BlueStackController()
     controller.setForeGround()
-    registerBoxes(controller)
+    registerBoxes(controller, con)
