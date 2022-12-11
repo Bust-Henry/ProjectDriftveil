@@ -1,0 +1,5 @@
+{
+    "api": "https://pokeapi.co/api/v2/",
+    "dbpath": "data/db.sqlite",
+    "testimage" : "data/Screenshot_1.png"
+}
