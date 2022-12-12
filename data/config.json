@@ -3,5 +3,6 @@
     "dbpath": "data/db.sqlite",
     "testimage" : "data/Screenshot_1.png",
     "calibration": "data/calibration.json",
-    "screenshot": "data/screenshot/"
+    "screenshot": "data/screenshot/",
+    "tesseract_config": "--psm 6 -c tessedit_char_whitelist=0123456789"
 }
