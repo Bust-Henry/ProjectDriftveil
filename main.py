@@ -6,6 +6,7 @@ import imageRecognition
 from blueStackController import BlueStackController
 import argparse
 import time
+from datetime import datetime
 
 class reading():
     def __init__(self, nr, lvl, hp) -> None:
@@ -45,15 +46,16 @@ def rebuild_database():
     print("done")
 
 def registerBoxes(bluestackcontroller:BlueStackController, con:DBConnector):
+    starttime = datetime.now()
     lastPokemon = reading(0,0,0)
     currentPokemon = reading(0,0,1)
     pokemonToRegister = []
     while True:
         pokemon = readPokemon(bluestackcontroller)
         currentPokemon = reading(pokemon[0], pokemon[1], pokemon[2])
-        time.sleep(1)
+        time.sleep(0.4)
         bluestackcontroller.nextPokemon()
-        time.sleep(1)
+        time.sleep(0.4)
         if not currentPokemon.compare(lastPokemon):
             pokemonToRegister.append(currentPokemon)
             print(currentPokemon.toString())
@@ -64,15 +66,16 @@ def registerBoxes(bluestackcontroller:BlueStackController, con:DBConnector):
     for pokemon in pokemonToRegister:
         con.registerPokemon(pokemon.nr)
     bluestackcontroller.clearScreenshots()
+    print("seconds:", (datetime.now() - starttime).total_seconds())
 
-def readPokemon(bluestackcontroller:BlueStackController):
+def readPokemon(bluestackcontroller:BlueStackController, calibrate = False):
     bluestackcontroller.setForeGround()
     bluestackcontroller.screenshot()
     result = bluestackcontroller.renameScreenshot("screenshot.png")
     if not result:
         print("renaming screenshot timed out")
         exit()
-    data = imageRecognition.readBluestacks()
+    data = imageRecognition.readBluestacks(calibrate)
     bluestackcontroller.deleteScreenshot()
     return data
 
@@ -103,7 +106,8 @@ if __name__=="__main__":
         con.clearRegisteredPokemon()
         print("registered pokemon cleared")
         exit()
-
     controller = BlueStackController()
-    controller.setForeGround()
-    registerBoxes(controller, con)
+    if args.calibrate:
+        readPokemon(controller,calibrate=True)
+    else:
+        registerBoxes(controller, con)
