@@ -58,9 +58,9 @@ def readImage(img, calibration=False):
     noimg = img.crop(tuple(calibration["no"]))
     statsimg = img.crop(tuple(calibration["stats"]))
     # read only digits in the 3 images
-    no = re.sub('\D','', pytesseract.image_to_string(noimg))
-    lvl = re.sub('\D','', pytesseract.image_to_string(lvlimg))
-    stats = re.sub('\D','', pytesseract.image_to_string(statsimg))
+    no = re.sub('\D','', pytesseract.image_to_string(noimg,config=os.environ.get("tesseract_config")))
+    lvl = re.sub('\D','', pytesseract.image_to_string(lvlimg,config=os.environ.get("tesseract_config")))
+    stats = re.sub('\D','', pytesseract.image_to_string(statsimg,config=os.environ.get("tesseract_config")))
     # return results
     return no, lvl, stats
 
