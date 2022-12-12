@@ -53,6 +53,7 @@ class DBConnector:
                     return False
                 currentlyowned = result[3]
                 self.engine.execute(self.tab.update().where(self.tab.c.nr==number).values(owned=currentlyowned+1))
+                return True
             else:
                 result = self.engine.execute(self.tab.select().where(self.tab.c.nr==number)).fetchone()
                 if result == None:
@@ -60,5 +61,45 @@ class DBConnector:
                     return False
                 currentlyowned = result[4]
                 self.engine.execute(self.tab.update().where(self.tab.c.nr==number).values(shinyowned=currentlyowned+1))
+                return True
         except IntegrityError:
             print("IntegrityError")
+        return False
+
+    def deRegisterPokemon(self, number, shiny=False):
+        try:
+            if not shiny:
+                result = self.engine.execute(self.tab.select().where(self.tab.c.nr==number)).fetchone()
+                if result == None:
+                    print("pokemon nr. " + number + " doesnt exists in this database")
+                    return False
+                currentlyowned = result[3]
+                newOwned = currentlyowned - 1
+                if newOwned < 0:
+                    newOwned = 0
+                self.engine.execute(self.tab.update().where(self.tab.c.nr==number).values(owned=newOwned))
+                return True
+            else:
+                result = self.engine.execute(self.tab.select().where(self.tab.c.nr==number)).fetchone()
+                if result == None:
+                    print("pokemon nr. " + number + " doesnt exists in this database")
+                    return False
+                currentlyowned = result[4]
+                newOwned = currentlyowned - 1
+                if newOwned < 0:
+                    newOwned = 0
+                self.engine.execute(self.tab.update().where(self.tab.c.nr==number).values(shinyowned=newOwned))
+                return True
+        except IntegrityError:
+            print("IntegrityError")
+        return False
+
+    def getNextPokemon(self, shiny = False):
+        if not shiny:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.owned==0)).fetchone()
+        else:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.shinyowned==0)).fetchone()
+        if not result:
+            return None
+        else:
+            return result[2]

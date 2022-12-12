@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "be1c9d92-b967-4e06-8bd6-c9d52c751b96",
+		"name": "ProjectDriftveil",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "nextPokemon",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/nextPokemon",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nextPokemon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "nextShiny",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/nextShiny",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nextShiny"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add Pokemon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pokemon/add",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemon",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add Shiny",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pokemon/addShiny",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemon",
+						"addShiny"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove Pokemon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pokemon/remove",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemon",
+						"remove"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove Shiny",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pokemon/removeShiny",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pokemon",
+						"removeShiny"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
