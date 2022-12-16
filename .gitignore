@@ -1,2 +1,3 @@
 data/db.sqlite
 __pycache__
+/data/screenshot
