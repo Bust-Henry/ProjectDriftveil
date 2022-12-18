@@ -2,6 +2,8 @@ import pyautogui
 import win32gui
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 class BlueStackController():
     toplist, winlist = [], []

@@ -4,6 +4,8 @@ import calibrationGUI
 import json
 import os
 import re
+from dotenv import load_dotenv
+load_dotenv()
 
 def calibrate(img):
     jsonpath = os.path.join(os.path.dirname(__file__), os.environ["calibration"])

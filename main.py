@@ -7,6 +7,8 @@ from blueStackController import BlueStackController
 import argparse
 import time
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 class reading():
     def __init__(self, nr, lvl, hp) -> None:
@@ -86,15 +88,6 @@ if __name__=="__main__":
     parser.add_argument('-c','--calibrate', action='store_true', help="calibrate the areas of text")
     parser.add_argument('--clearRegistered', action='store_true', help="clears all registered pokemon")
     args = parser.parse_args()
-
-    # --------------------------environment variables------------------------
-    # setting environment variables
-    os.environ['config'] = os.path.join(os.path.dirname(__file__), "data", "config.json")
-    # loading config file
-    config = loadConfig(os.environ.get("config"))
-    # put every element in an environment variable
-    for item in config.items():
-        os.environ[item[0]] = item[1]
     
     # ------------------ Start Script -------------------
     con = DBConnector(os.environ.get("dbpath"))

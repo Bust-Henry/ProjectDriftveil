@@ -1,5 +1,7 @@
 import requests
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def getPokemon(number):
     response = requests.get(os.environ.get("api") + "pokemon/" + str(number))
