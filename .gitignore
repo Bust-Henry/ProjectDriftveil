@@ -1,4 +1,4 @@
 data/db.sqlite
 __pycache__
 /data/screenshot
-.env
+.env.secret
