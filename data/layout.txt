@@ -1,0 +1,89 @@
+- CommonData
+8 - bankUniqueID
+4X - personalRnd
+4 - monsno
+4 - parentIDUpper
+4 - parentIDLower
+4 - exp
+4 - lv
+4 - tokuseino
+4X - boxMark
+8 - colorRnd
+4 - colorNo //shinyFlag
+4 - seikaku
+4 - seikakuHosei
+4 - secondSeikaku
+1 - eventGetFlag
+4 - sex
+4 - formNo
+8X - effortDic
+8X - conditionDic
+4 - furGloss
+4 - pokerus
+4 - ribbonA
+4 - ribbonB
+4X - lumpingRibbonList
+4 - ribbonC
+4 - ribbonD
+S - nickname
+8X - talentDic
+1 - tamagoFlag
+4 - getCassette
+4 - langId
+4 - multiWork
+S - parentsName
+4 - firstContactYear
+4 - firstContactMonth
+4 - firstContactDay
+4 - parentsSex
+5X - trainingFlagDic
+- OrionData (Pokemon Sw/Sh)
+1 - special_g_flag
+4X - waza
+4 - getBall
+4 - getPlace
+4 - birthPlace
+- HayabusaData
+1 - oybnFlag
+4 - oybnWazaNo
+4X - waza_h
+8X - ganbaDic
+4 - height
+4 - weight
+4 - getBall
+8 - kaidenFlag
+4 - getPlace
+4 - birthPlace
+- DelphisData
+4X - waza
+4 - getBall
+4 - getPlace
+4 - birthPlace
+- BelugaData (Pokemon lets go)
+8X - awakeningDic
+4X - waza
+4 - height
+4 - weight
+4 - getBall
+4 - getPlace
+4 - birthPlace
+- PokemonIndividualMetaData (Pokemon home data)
+4 - BoxNumber
+4 - BoxPosition
+4X - GroupNumber
+4X - LabelNumber
+4X - LabelBlock
+1 - favorite
+8 - CommitTime
+D - CommitTime
+8 - LastUpdateTime
+D - LastUpdateTime
+8 - MovingTime
+D - MovingTime
+4 - LastRom
+- In-Class
+S
+
+S = String, 1 byte length + length bytes chars
+X = Array, 2 bytes ID, 1 byte length as (X & 0xF), following size * length bytes
+D = DateTime, stores a String
