@@ -1,7 +1,79 @@
 {
-    "size": 10,
-    "data": {
-        "nr": [1,3],
-        "shiny": [1,4]
-    }
+  "useless": {
+    "unknown": 16
+  },
+  "CommonData": {
+    "bankUniqueID": 8,
+    "personalRnd": "4X",
+    "monsno": 4,
+    "parentIDUpper": 4,
+    "parentIDLower": 4,
+    "exp": 4,
+    "lv": 4,
+    "tokuseino": 4,
+    "boxMark": "4X",
+    "colorRnd": 8,
+    "colorNo": 4,
+    "seikaku": 4,
+    "seikakuHosei": 4,
+    "secondSeikaku": 4,
+    "eventGetFlag": 1,
+    "sex": 4,
+    "formNo": 4,
+    "effortDic": "8X",
+    "conditionDic": "8X",
+    "furGloss": 4,
+    "pokerus": 4,
+    "ribbonA": 4,
+    "ribbonB": 4,
+    "lumpingRibbonList": "4X",
+    "ribbonC": 4,
+    "ribbonD": 4,
+    "nickname": "S",
+    "talentDic": "8X",
+    "tamagoFlag": 1,
+    "getCassette": 4,
+    "langId": 4,
+    "multiWork": 4,
+    "parentsName": "S",
+    "firstContactYear": 4,
+    "firstContactMonth": 4,
+    "firstContactDay": 4,
+    "parentsSex": 4,
+    "trainingFlagDic": "5X"
+  },
+  "OrionData": {
+    "special_g_flag": 1,
+    "waza": "4X",
+    "getBall": 4,
+    "getPlace": 4,
+    "birthPlace": 4
+  },
+  "BelugaData": {
+    "awakeningDic": "8X",
+    "waza": "4X",
+    "height": 4,
+    "weight": 4,
+    "getBall": 4,
+    "getPlace": 4,
+    "birthPlace": 4
+  },
+  "PokemonIndividualMetaData": {
+    "BoxNumber": 4,
+    "BoxPosition": 4,
+    "GroupNumber": "4X",
+    "LabelNumber": "4X",
+    "LabelBlock": "4X",
+    "favorite": 1,
+    "CommitTime": 8,
+    "CommitTimeD": "D",
+    "LastUpdateTime": 8,
+    "LastUpdateTimeD": "D",
+    "MovingTime": 8,
+    "MovingTimeD": "D",
+    "LastRom": 4
+  },
+  "In-Class": {
+    "S": "S"
+  }
 }
