@@ -2,39 +2,101 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import json
-filepath = os.path.join(os.path.dirname(__file__), os.environ["byteMapping"])
+dirname = os.path.dirname(__file__)
 import socket
+import subprocess
+import typing
+import sys
+from bitstring import BitArray
 
-def getBoxData(bytestream:bytearray):
-    """this function takes a bytestream (exp. save file from pokemon home) and formats it after the configured byteMapping (see byteMapping.json)
+def readString(file:typing.BinaryIO):
+    len = int.from_bytes(file.read(1),byteorder=sys.byteorder)
+    return file.read(len)
+
+def read4Array(file:typing.BinaryIO):
+    id = file.read(2)
+    lenByte = BitArray(file.read(1))
+    if lenByte.bin == '':
+        return False
+    # cut away leading 0b and the 4 first bit
+    len = int(lenByte.bin[4:],2) * 4
+    return file.read(len)
+
+def read5Array(file:typing.BinaryIO):
+    id = file.read(2)
+    lenByte = BitArray(file.read(1))
+    if lenByte.bin == '':
+        return False
+    # cut away leading 0b and the 4 first bit
+    len = int(lenByte.bin[4:],2) * 5
+    return file.read(len)
+
+def read8Array(file:typing.BinaryIO):
+    id = file.read(2)
+    lenByte = BitArray(file.read(1))
+    if lenByte.bin == '':
+        return False
+    # cut away leading 0b and the 4 first bit
+    len = int(lenByte.bin[4:],2) * 8
+    return file.read(len)
+
+def getFormat(str:str):
+    """This function returns the right parse function for the given format
 
     Args:
-        bytestream (bytearray): a bytestream containing save data from one or multiple pokemon ()
+        str (str): the format of the upcoming bytes (exp. '4X')
+    Returns:
+        function: the function to call to parse the given format
     """
+    if str == "4X":
+        return read4Array
+    if str == "5X":
+        return read5Array
+    if str == "8X":
+        return read8Array
+    if str == "S":
+        return readString
+    if str == "D":
+        return readString
+     
+
+def getBoxData():
+    """this function takes a bytefile (exp. save file from pokemon home) and formats it after the configured byteMapping (see byteMapping.json)
+    """
+    bytefile = os.path.join(dirname, os.environ.get("decodedbytefile"))
+    jsonfile = os.path.join(dirname, os.environ.get("byteMapping"))
     # open byte mapping and reading bytes from file:
-    byteMapping = json.load(open(filepath, "r"))
+    byteMapping:dict = json.load(open(jsonfile, "r"))
     # splitting bytestream in chunks equal to the calculated chunk of bytes that describe one pokemon
-    elementsize = byteMapping["size"]
-    bytechain = []
-    bytePokemon = []
-    i = 0
-    for byte in bytestream:
-        if i >= elementsize:
-            bytePokemon.append(bytechain)
-            bytechain = []
-            i = 0
-        bytechain.append(byte)
-        i += 1
-    # split up bytechunks into valuable data (byteMapping contains keys and start and stop bytes for those values)
-    # example: the value shinyFlag is in byte 10 unitl 12
-    pokemon = []
-    for element in bytePokemon:
-        mapping:dict = byteMapping["data"]
-        pokemondict = {}
-        for key, value in mapping.items():
-            pokemondict[key] = element[value[0]:value[1]]
-        pokemon.append(pokemondict)
-    print(pokemon)
+    skipBytes = byteMapping.pop("useless")["unknown"]
+    with open(bytefile, "rb") as bytefile:
+        # skip the beginning of the file, because it doesnt contain pokemon data
+        currentbyte = bytefile.read(skipBytes)
+        pokemon = []
+        while True:
+            currentpokemon = {}
+            for category in byteMapping.values():
+                for key, value in category.items():
+                    if isinstance(value, str):
+                        #value is a string so we have to determine the reading method
+                        currentbyte = getFormat(value)(bytefile)
+                        if currentbyte == False:
+                            break
+                    else:
+                        currentbyte = bytefile.read(value)
+                    currentpokemon[key] = currentbyte
+            pokemon.append(currentpokemon)
+            if bytefile.read(1) == b'':
+                break
+            else: 
+                bytefile.seek(-1, 1)
+        print(pokemon)
+   
+
+def decryptFile():
+    bytefile = os.path.join(dirname, os.environ.get("bytefile"))
+    decodedbytefile = os.path.join(dirname, os.environ.get("decodedbytefile"))
+    subprocess.call(f"PHDecrypt.exe {bytefile} {decodedbytefile}")
 
 def receive(port:int=5050):
     """binds to the given port to accept save data from pokemon home. This function is blocking and can only be manually shut down.
@@ -45,7 +107,7 @@ def receive(port:int=5050):
     Calls:
         homeConnector.getBoxData
     """    
-    print("waiting for data")
+    filepath = os.path.join(dirname, os.environ.get("bytefile"))
     #Create a socket object.
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #Bind the socket.
@@ -53,6 +115,7 @@ def receive(port:int=5050):
     #Start listening.
     sock.listen()
     while True:
+        print("waiting for data")
         #Accept client.
         client, addr = sock.accept()
         #Receive all the bytes and write them into the file.
@@ -62,11 +125,14 @@ def receive(port:int=5050):
             #Stop receiving.
             if received == b'':
                 break
-            #Write bytes into the file.
+            #append stream
             stream+=received
-        getBoxData(stream)
-
-
+        with open(filepath, "wb") as bytefile:
+            bytefile.write(stream)
+        decryptFile()
+        getBoxData()
+        
+        
 if __name__ == "__main__":
-    receive()
-    rec
+    #receive()
+    getBoxData()
