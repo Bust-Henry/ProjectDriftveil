@@ -49,6 +49,24 @@
     "getPlace": 4,
     "birthPlace": 4
   },
+  "HayabusaData": {
+    "oybnFlag": 1,
+    "oybnWazaNo": 4,
+    "waza_h": "4X",
+    "ganbaDic": "8X",
+    "height": 4,
+    "weight": 4,
+    "getBall": 4,
+    "kaidenFlag": 8,
+    "getPlace": 4,
+    "birthPlace": 4
+  },
+  "DelphisData": {
+    "waza": "4X",
+    "getBall": 4,
+    "getPlace": 4,
+    "birthPlace": 4
+  },
   "BelugaData": {
     "awakeningDic": "8X",
     "waza": "4X",
@@ -73,7 +91,7 @@
     "MovingTimeD": "D",
     "LastRom": 4
   },
-  "In-Class": {
+  "In:Class": {
     "S": "S"
   }
 }
