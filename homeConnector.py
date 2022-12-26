@@ -8,6 +8,7 @@ import subprocess
 import typing
 import sys
 from bitstring import BitArray
+from dbconnector import DBConnector
 """ 
 class byteParser():
     TYPE_BOOL = "bool"
@@ -118,7 +119,8 @@ def getBoxData():
                         return pokemon
                     currentpokemon[key] = currentbyte
             pokemon.append(currentpokemon)
-   
+
+
 """ def translateBoxData(pokemon:list):
     jsonfile = os.path.join(dirname, os.environ.get("typeMapping"))
     typeMapping:dict = json.load(open(jsonfile, "r"))
@@ -144,7 +146,7 @@ def decryptFile():
     with open(decodedbytefile, "ab") as file:
         file.write(b'\xFF')
 
-def receive(port:int=5050):
+def receive(dbcon:DBConnector, port:int=5050):
     """binds to the given port to accept save data from pokemon home. This function is blocking and can only be manually shut down.
     This function is designed to run on its own, because it continously binds to the port and accepts new clients.
 
@@ -176,14 +178,19 @@ def receive(port:int=5050):
         with open(filepath, "wb") as bytefile:
             bytefile.write(stream)
         decryptFile()
-        getBoxData()
-        
+        dbcon.updateDatabase(getBoxData())
         
 if __name__ == "__main__":
+    from dexScraper import getPokemon
     #receive()
     print(getBoxData()[0]["monsno"])
     for mon in getBoxData():
         no = int.from_bytes(mon["monsno"], 'little', signed=False)
+        name = getPokemon(no)["species"]["name"]
         colorno = int.from_bytes(mon["colorNo"], 'little', signed=False)
-        if colorno == 1:
-            print(no, colorno)
+        if colorno == 0:
+            shiny = "Normal"
+        else:
+            shine = "Shiny"
+        print(name, shiny)
+        
