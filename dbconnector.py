@@ -103,3 +103,17 @@ class DBConnector:
             return None
         else:
             return result[2]
+    
+    def updateDatabase(self, pokemonlist:list):
+        self.clearRegisteredPokemon()
+        amount = 0
+        for pokemon in pokemonlist:
+            no = int.from_bytes(pokemon["monsno"], 'little', signed=False)
+            colorno = int.from_bytes(pokemon["colorNo"], 'little', signed=False)
+            if colorno == 0:
+                shiny = False
+            else:
+                shiny = True
+            self.registerPokemon(no, shiny)
+            amount+=1
+        print(amount, "pokemon added to the database!")
