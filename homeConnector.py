@@ -8,6 +8,36 @@ import subprocess
 import typing
 import sys
 from bitstring import BitArray
+""" 
+class byteParser():
+    TYPE_BOOL = "bool"
+    TYPE_INT = "int"
+    TYPE_LONG = "long"
+    TYPE_U_LONG = "ulong"
+    TYPE_ARRAY_INT = "int[]"
+    TYPE_DICT_INT_INT = "dict<int,int>"
+    TYPE_DICT_INT_BOOL = "dict<int,bool>"
+    TYPE_STRING = "string"
+
+    def get_parse_func(self, type:str):
+        if type == self.TYPE_BOOL:
+            return self.parseBool
+        if type == self.TYPE_INT:
+            return self.parseInt
+        else:
+            return None
+
+    def parseBool(self,bytes):
+        if bytes == b'':
+            return None
+        if bytes == b'\x01':
+            return True
+        if bytes == b'\x00':
+            return False
+
+    def parseInt(self,bytes)->int:
+        print(bytes)
+        return int.from_bytes(bytes, 'little',signed =False) """
 
 def readString(file:typing.BinaryIO):
     len = int.from_bytes(file.read(1),byteorder=sys.byteorder)
@@ -81,22 +111,38 @@ def getBoxData():
                         #value is a string so we have to determine the reading method
                         currentbyte = getFormat(value)(bytefile)
                         if currentbyte == False:
-                            break
+                            return pokemon
                     else:
                         currentbyte = bytefile.read(value)
+                    if currentbyte == b'\xFF':
+                        return pokemon
                     currentpokemon[key] = currentbyte
             pokemon.append(currentpokemon)
-            if bytefile.read(1) == b'':
-                break
-            else: 
-                bytefile.seek(-1, 1)
-        print(pokemon)
    
+""" def translateBoxData(pokemon:list):
+    jsonfile = os.path.join(dirname, os.environ.get("typeMapping"))
+    typeMapping:dict = json.load(open(jsonfile, "r"))
+    for mon in pokemon:
+        for category in typeMapping.values():
+            for key, value in mon.items():
+                print(key,value)
+                if key in category:
+                    parsefunc = byteParser().get_parse_func(category[key])
+                    if parsefunc == None:
+                        continue
+                    else:
+                        mon[key] = parsefunc(value)
+                else:
+                    print("no type mapping available for: ", key)
+    return pokemon """
 
 def decryptFile():
     bytefile = os.path.join(dirname, os.environ.get("bytefile"))
     decodedbytefile = os.path.join(dirname, os.environ.get("decodedbytefile"))
     subprocess.call(f"PHDecrypt.exe {bytefile} {decodedbytefile}")
+    #adding a flag to the end of the file for better iterating
+    with open(decodedbytefile, "ab") as file:
+        file.write(b'\xFF')
 
 def receive(port:int=5050):
     """binds to the given port to accept save data from pokemon home. This function is blocking and can only be manually shut down.
@@ -135,4 +181,9 @@ def receive(port:int=5050):
         
 if __name__ == "__main__":
     #receive()
-    getBoxData()
+    print(getBoxData()[0]["monsno"])
+    for mon in getBoxData():
+        no = int.from_bytes(mon["monsno"], 'little', signed=False)
+        colorno = int.from_bytes(mon["colorNo"], 'little', signed=False)
+        if colorno == 1:
+            print(no, colorno)
