@@ -8,6 +8,7 @@ import argparse
 import time
 from datetime import datetime
 from dotenv import load_dotenv
+import homeConnector
 load_dotenv()
 
 class reading():
@@ -99,8 +100,9 @@ if __name__=="__main__":
         con.clearRegisteredPokemon()
         print("registered pokemon cleared")
         exit()
-    controller = BlueStackController()
+    homeConnector.receive(con)
+    """ controller = BlueStackController()
     if args.calibrate:
         readPokemon(controller,calibrate=True)
     else:
-        registerBoxes(controller, con)
+        registerBoxes(controller, con) """
