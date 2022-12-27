@@ -1,6 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort, render_template, send_file
 from dbconnector import DBConnector
+from blueStackController import BlueStackController
 import os
+from PIL import Image
+from base64 import b64encode
+import io
 
 app = Flask(__name__)
 con:DBConnector = None
@@ -67,6 +71,31 @@ def removeShiny():
 @app.route("/pokemon/list/")
 def listPokemon():
     pass
+
+@app.route("/pokemon/update/")
+def updatePokemon():
+    try:
+        controller = BlueStackController()
+        controller.closeAll()
+        if controller.reloadSaveData():
+            result = controller.sendSaveData()
+        return jsonify({"result": result})
+    except:
+        abort(503)
+
+@app.route("/status")
+def status():
+    try:
+        controller = BlueStackController()
+        img:Image = controller.screenshotPIL()
+        data = io.BytesIO()
+        img.save(data, "PNG")
+        encode_img_data = b64encode(data.getvalue())
+        return render_template("index.html", img_data="data:image/png;base64,"+encode_img_data.decode("UTF-8"))
+    except Exception as e:
+        print(e)
+        abort(503)
+    
 
 def run(dbpath):
     global con
