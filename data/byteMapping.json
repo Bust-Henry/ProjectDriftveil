@@ -1,6 +1,8 @@
 {
-  "useless": {
-    "unknown": 16
+  "filedata": {
+    "unknown": 4,
+    "len": 2,
+    "skip": 10
   },
   "CommonData": {
     "bankUniqueID": 8,
