@@ -23,7 +23,9 @@ class BlueStackController():
         self.macros = json.load(open(os.path.join(os.path.dirname(__file__), os.environ.get("bluestacksMacros"))))
         
         
-    def setForeGround(self):
+    def setForeGround(self) -> None:
+        """sets bluestacks to the foreground
+        """
         win32gui.EnumWindows(self.enum_cb, self.toplist)
         bluestack = [(hwnd, title) for hwnd, title in self.winlist if 'bluestacks' in title.lower()]
         # just grab the hwnd for first window matching bluestack
@@ -34,7 +36,12 @@ class BlueStackController():
         shell.SendKeys('%')
         win32gui.SetForegroundWindow(hwnd)
     
-    def getBBox(self):
+    def getBBox(self)->tuple[int, int, int, int]:
+        """returns the boundries of bluestacks
+
+        Returns:
+            tuple[int, int, int, int]: the bbox of bluestacks
+        """
         win32gui.EnumWindows(self.enum_cb, self.toplist)
         bluestack = [(hwnd, title) for hwnd, title in self.winlist if 'bluestacks' in title.lower()]
         # just grab the hwnd for first window matching bluestack
@@ -45,14 +52,24 @@ class BlueStackController():
         shell.SendKeys('%')
         return win32gui.GetWindowRect(hwnd)
 
-    def screenshot(self):
+    def screenshot(self)->Image:
+        """takes a screenshot of bluestacks (uses the bluestacks screenshot function)
+
+        Returns:
+            Image: A PIL Image of bluestacks
+        """
         self.deleteScreenshot()
         self.setForeGround()
         pyautogui.hotkey('ctrl','shift','s')
         self.renameScreenshot("screenshot.png")
         return Image.open(os.path.join(os.path.dirname(__file__), "data", "screenshot", "screenshot.png"))
 
-    def screenshotPIL(self):
+    def screenshotPIL(self)->Image:
+        """takes a screenshot of bluestacks
+
+        Returns:
+            Image: A PIL Image of bluestacks
+        """
         self.setForeGround()
         bbox = self.getBBox()
         return ImageGrab.grab(bbox)
@@ -91,6 +108,7 @@ class BlueStackController():
     def closeAll(self):
         self.runMacro(self.macros["CloseAll"])
         time.sleep(3)    
+
     def executePythonScript(self):
         self.runMacro(self.macros["ExecutePythonScript"])
 
@@ -104,12 +122,23 @@ class BlueStackController():
         self.runMacro(self.macros["CloseScript"])
         time.sleep(2.5)
 
-    def runMacro(self, macro):
-        keys = macro.split(";")
+    def runMacro(self, macro:str, seperator:str=";"):
+        """this function runs the given makro.
+
+        Args:
+            macro (str): the makro that should be executed. Every key has to be seperated by a seperator. exp: 'ctrl;shift;q'
+            seperator (str, optional): the seperator between the keys. Defaults to ";".
+        """
+        keys = macro.split(seperator)
         self.setForeGround()
         pyautogui.hotkey(*keys)
 
-    def sendSaveData(self):
+    def sendSaveData(self)->bool:
+        """this function send the currently loaded save file to the socket server. Keep in mind that the right script has to be located on the device in order to work
+
+        Returns:
+            bool: success
+        """
         self.executePythonScript()
         time.sleep(2)
         timeout = 10
@@ -132,6 +161,12 @@ class BlueStackController():
         return False
     
     def reloadSaveData(self) -> bool:
+        """this function calls all necessary makros to reload the save file from a pokemon home account. 
+        It also handles some edgecases that can go wrong while trying this (some more will most likely appear with further testing)
+
+        Returns:
+            bool: success
+        """
         self.setForeGround()
         self.openHome()
         ready = False
