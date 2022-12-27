@@ -1,0 +1,7 @@
+{
+  "CloseAll": "ctrl;shift;q",
+  "ExecutePythonScript": "ctrl;shift;w",
+  "OpenHome": "ctrl;shift;e",
+  "PressStart": "ctrl;shift;r",
+  "CloseScript": "ctrl;shift;d"
+}
