@@ -9,6 +9,7 @@ import typing
 import sys
 from bitstring import BitArray
 from dbconnector import DBConnector
+from datetime import datetime
 """ 
 class byteParser():
     TYPE_BOOL = "bool"
@@ -99,12 +100,16 @@ def getBoxData():
     # open byte mapping and reading bytes from file:
     byteMapping:dict = json.load(open(jsonfile, "r"))
     # splitting bytestream in chunks equal to the calculated chunk of bytes that describe one pokemon
-    skipBytes = byteMapping.pop("useless")["unknown"]
+    filedata = byteMapping.pop("filedata")
     with open(bytefile, "rb") as bytefile:
         # skip the beginning of the file, because it doesnt contain pokemon data
-        currentbyte = bytefile.read(skipBytes)
+        currentbyte = bytefile.read(filedata["unknown"])
+        len = int.from_bytes(bytefile.read(filedata["len"]), "little", signed=False)
+        currentbyte = bytefile.read(filedata["skip"])
         pokemon = []
-        while True:
+        print("no. of pokemon in this save file:", len)
+        i = 1
+        while i <= len:
             currentpokemon = {}
             for category in byteMapping.values():
                 for key, value in category.items():
@@ -112,13 +117,19 @@ def getBoxData():
                         #value is a string so we have to determine the reading method
                         currentbyte = getFormat(value)(bytefile)
                         if currentbyte == False:
+                            print("early canceled at pokemon no." , i, ". something is wrong with the length of the stream")
                             return pokemon
                     else:
                         currentbyte = bytefile.read(value)
                     if currentbyte == b'\xFF':
+                        # early cancel, incase something went wrong with the length
+                        print("early canceled at pokemon no." , i, ". something is wrong with the length of the stream")
                         return pokemon
                     currentpokemon[key] = currentbyte
             pokemon.append(currentpokemon)
+            i += 1
+        print("no extraced:", i)
+        return pokemon
 
 
 """ def translateBoxData(pokemon:list):
@@ -175,10 +186,12 @@ def receive(dbcon:DBConnector, port:int=5050):
                 break
             #append stream
             stream+=received
+        starttime = datetime.now()
         with open(filepath, "wb") as bytefile:
             bytefile.write(stream)
         decryptFile()
         dbcon.updateDatabase(getBoxData())
+        print("time for this action:", (datetime.now() - starttime).total_seconds())
         
 if __name__ == "__main__":
     from dexScraper import getPokemon
