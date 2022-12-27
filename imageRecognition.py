@@ -36,7 +36,6 @@ def remove_transparency(im, bg_colour=(255, 255, 255)):
         bg = Image.new("RGBA", im.size, bg_colour + (255,))
         bg.paste(im, mask=alpha)
         return bg
-
     else:
         return im
 
@@ -65,6 +64,27 @@ def readImage(img, calibration=False):
     stats = re.sub('\D','', pytesseract.image_to_string(statsimg,config=os.environ.get("tesseract_config")))
     # return results
     return no, lvl, stats
+
+def readAll(img):
+    # better readability options:
+    # convert image to grayscale
+    img = ImageOps.grayscale(img)
+    # enhance contrast 10x
+    img = ImageEnhance.Contrast(img).enhance(10)
+    # remove alpha channel
+    img = remove_transparency(img)
+    return pytesseract.image_to_string(img) 
+
+def readBoxes(img):
+    # better readability options:
+    # convert image to grayscale
+    img = ImageOps.grayscale(img)
+    # enhance contrast 10x
+    img = ImageEnhance.Contrast(img).enhance(10)
+    # remove alpha channel
+    img = remove_transparency(img)
+    return pytesseract.image_to_boxes(img) 
+
 
 def readBluestacks(calibration=False):
     path = os.path
