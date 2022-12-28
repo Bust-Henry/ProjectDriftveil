@@ -194,16 +194,6 @@ def receive(dbcon:DBConnector, port:int=5050):
         print("time for this action:", (datetime.now() - starttime).total_seconds())
         
 if __name__ == "__main__":
-    from dexScraper import getPokemon
-    #receive()
-    print(getBoxData()[0]["monsno"])
-    for mon in getBoxData():
-        no = int.from_bytes(mon["monsno"], 'little', signed=False)
-        name = getPokemon(no)["species"]["name"]
-        colorno = int.from_bytes(mon["colorNo"], 'little', signed=False)
-        if colorno == 0:
-            shiny = "Normal"
-        else:
-            shine = "Shiny"
-        print(name, shiny)
-        
+    path = os.path.join(os.path.dirname(__file__), os.environ.get("dbpath"))
+    con = DBConnector(path)
+    receive(con)
