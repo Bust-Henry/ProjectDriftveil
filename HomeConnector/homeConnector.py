@@ -152,7 +152,7 @@ def getBoxData():
 def decryptFile():
     bytefile = os.path.join(dirname, os.environ.get("bytefile"))
     decodedbytefile = os.path.join(dirname, os.environ.get("decodedbytefile"))
-    decryptExe = os.path.join(dirname, os.environ.get("PHDecrypt.exe"))
+    decryptExe = os.path.join(dirname, os.environ.get("decryptExe"))
     subprocess.call(f"{decryptExe} {bytefile} {decodedbytefile}")
     #adding a flag to the end of the file for better iterating
     with open(decodedbytefile, "ab") as file:
@@ -174,27 +174,33 @@ def receive(dbcon:DBConnector, port:int=5050):
     sock.bind( ("", 5050) )
     #Start listening.
     sock.listen()
-    while True:
-        print("waiting for data")
-        #Accept client.
-        client, addr = sock.accept()
-        #Receive all the bytes and write them into the file.
-        stream = b''
+    try:
         while True:
-            received = client.recv(5)
-            #Stop receiving.
-            if received == b'':
-                break
-            #append stream
-            stream+=received
-        starttime = datetime.now()
-        with open(filepath, "wb") as bytefile:
-            bytefile.write(stream)
-        decryptFile()
-        dbcon.updateDatabase(getBoxData())
-        print("time for this action:", (datetime.now() - starttime).total_seconds())
+            #Accept client.
+            client, addr = sock.accept()
+            #Receive all the bytes and write them into the file.
+            stream = b''
+            while True:
+                received = client.recv(5)
+                #Stop receiving.
+                if received == b'':
+                    break
+                #append stream
+                stream+=received
+            starttime = datetime.now()
+            with open(filepath, "wb") as bytefile:
+                bytefile.write(stream)
+            decryptFile()
+            dbcon.updateDatabase(getBoxData())
+            print("time for this action:", (datetime.now() - starttime).total_seconds())
+    except KeyboardInterrupt:
+        pass
         
 if __name__ == "__main__":
     path = os.path.join(os.path.dirname(__file__), os.environ.get("dbpath"))
+    print(path)
     con = DBConnector(path)
-    receive(con)
+    import threading
+    thread = threading.Thread(target=receive, args=(con,5050), daemon=True)
+    thread.start()
+    input('Waiting for data, press Return to terminate server')
