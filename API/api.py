@@ -5,6 +5,8 @@ import os
 from PIL import Image
 from base64 import b64encode
 import io
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 con:DBConnector = None
@@ -98,10 +100,11 @@ def status():
     
 
 def run(dbpath):
+    print(dbpath)
     global con
     con = DBConnector(dbpath)
     app.run("0.0.0.0", 8080, True)
     
 if __name__ == "__main__":
-    run(os.path.join(os.path.dirname(__file__), "data", "db.sqlite"))
+    run(os.path.join(os.path.dirname(__file__), os.environ.get("dbpath")))
 
