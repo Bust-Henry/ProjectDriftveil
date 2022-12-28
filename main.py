@@ -2,6 +2,7 @@ from subprocess import Popen, CREATE_NEW_CONSOLE
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
 if __name__ == "__main__":
     api_path=os.environ.get("api_path")
     homeConnector_path=os.environ.get("homeConnector_path")
