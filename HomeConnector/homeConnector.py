@@ -152,7 +152,8 @@ def getBoxData():
 def decryptFile():
     bytefile = os.path.join(dirname, os.environ.get("bytefile"))
     decodedbytefile = os.path.join(dirname, os.environ.get("decodedbytefile"))
-    subprocess.call(f"PHDecrypt.exe {bytefile} {decodedbytefile}")
+    decryptExe = os.path.join(dirname, os.environ.get("PHDecrypt.exe"))
+    subprocess.call(f"{decryptExe} {bytefile} {decodedbytefile}")
     #adding a flag to the end of the file for better iterating
     with open(decodedbytefile, "ab") as file:
         file.write(b'\xFF')
