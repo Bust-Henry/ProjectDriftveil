@@ -1,0 +1,1 @@
+pyinstaller -F --add-data "data;data" --add-data "templates;templates" --add-data "templates;templates" api.py
