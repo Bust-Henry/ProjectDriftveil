@@ -82,7 +82,8 @@ def updatePokemon():
         if controller.reloadSaveData():
             result = controller.sendSaveData()
         return jsonify({"result": result})
-    except:
+    except Exception as e:
+        print(e)
         abort(503)
 
 @app.route("/status")
