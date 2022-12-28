@@ -166,7 +166,7 @@ def receive(dbcon:DBConnector, port:int=5050):
         port (int, optional): port that the socket accepts data from. Defaults to 5050.
     Calls:
         homeConnector.getBoxData
-    """    
+    """
     filepath = os.path.join(dirname, os.environ.get("bytefile"))
     #Create a socket object.
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -198,9 +198,8 @@ def receive(dbcon:DBConnector, port:int=5050):
         
 if __name__ == "__main__":
     path = os.path.join(os.path.dirname(__file__), os.environ.get("dbpath"))
-    print(path)
     con = DBConnector(path)
     import threading
     thread = threading.Thread(target=receive, args=(con,5050), daemon=True)
     thread.start()
-    input('Waiting for data, press Return to terminate server')
+    input('Waiting for data, press return to terminate server...')
