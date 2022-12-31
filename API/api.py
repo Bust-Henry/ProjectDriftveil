@@ -90,7 +90,23 @@ def removeShiny():
 
 @app.route("/pokemon/list/")
 def listPokemon():
-    pass
+    result = con.getAllOwned()
+    return jsonify(result)
+
+@app.route("/pokemon/listShiny/")
+def listShinyPokemon():
+    result = con.getAllOwned(True)
+    return jsonify(result)
+
+@app.route("/pokemon/listMissing/")
+def listMissingPokemon():
+    result = con.getAllMissing()
+    return jsonify(result)
+
+@app.route("/pokemon/listMissingShiny/")
+def listMissingShinyPokemon():
+    result = con.getAllMissing(True)
+    return jsonify(result)
 
 @app.route("/pokemon/update/")
 def updatePokemon():

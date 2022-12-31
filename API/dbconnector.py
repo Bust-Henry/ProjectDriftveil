@@ -115,3 +115,29 @@ class DBConnector:
                 shiny = True
             self.registerPokemon(no, shiny)
         print(len(pokemonlist), "pokemon added to the database!")
+
+    def getAllOwned(self, shiny=False):
+        if not shiny:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.owned>0)).fetchall()
+        else:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.shinyowned>0)).fetchall()
+        if not result:
+            return None
+        else:
+            mons = []
+            for pokemon in result:
+                mons.append({"nr": pokemon[1], "name": pokemon[2]})
+            return mons
+    
+    def getAllMissing(self, shiny=False):
+        if not shiny:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.owned==0)).fetchall()
+        else:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.shinyowned==0)).fetchall()
+        if not result:
+            return None
+        else:
+            mons = []
+            for pokemon in result:
+                mons.append({"nr": pokemon[1], "name": pokemon[2]})
+            return mons
