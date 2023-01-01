@@ -11,5 +11,7 @@
   "/listMissing": "lists all missing pokemon to complete pokedex",
   "/listMissingShiny": "lists all missing shiny pokemon to complete shiny pokedex",
   "/update": "updates the database from the pokemon home save file",
-  "/status": "shows the status of the android emulator"
+  "/status": "shows the status of the android emulator",
+  "/claimPokemon": "claims a pokemon for you (declares intent do catch)",
+  "/unClaimPokemon": "unclaims a pokemon (clears intent do catch)"
 }
