@@ -31,7 +31,7 @@ def home():
     for rule in app.url_map.iter_rules():
         # Filter out rules we can't navigate to in a browser
         # and rules that require parameters
-        if "GET" in rule.methods and has_no_empty_params(rule):
+        if has_no_empty_params(rule):
             url = url_for(rule.endpoint, **(rule.defaults or {}))
             print(url)
             if url in desriptions.keys():
@@ -54,7 +54,7 @@ def nextShiny():
         return jsonify({"response": "None"})
     return jsonify({"response": re})
 
-@app.route("/add/", methods=["POST"])
+@app.route("/add", methods=["POST"])
 def addPokemon():
     json = request.get_json()
     if "number" in json:
@@ -139,7 +139,32 @@ def status():
     except Exception as e:
         print(e)
         abort(503)
-    
+
+@app.route("/claimPokemon", methods=["POST"])
+def claimPokemon():
+    try:
+        data:dict = request.get_json()
+        if "user" not in data.keys():
+            return jsonify({"request": "missing key user!"})
+        if "pokemon" not in data.keys():
+            return jsonify({"request": "missing key pokemon!"})
+        user = data["user"]
+        pokemon:list = data["pokemon"]
+        result = con.claimPokemon(pokemon, user)
+        return jsonify(result)
+    except Exception as e:
+        print(e)
+        abort(503)
+
+@app.route("/unClaimPokemon", methods=["POST"])
+def unClaimPokemon():
+    try:
+        data:list = request.get_json()
+        result = con.unClaimPokemon(data)
+        return jsonify(result)
+    except Exception as e:
+        print(e)
+        abort(503)
 
 def run(dbpath):
     print(dbpath)

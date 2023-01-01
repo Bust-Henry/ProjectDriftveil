@@ -59,11 +59,46 @@ class DBConnector:
         for i in range(1, max+1):    
             self.engine.execute(self.tab.update().where(self.tab.c.nr==i).values(owned=0, shinyowned=0))
     
-    def claimPokemon(self, number, name):
+    def claimOnePokemon(self, number:int, name:str):
         try:
-            pass
+            result = self.engine.execute(self.tab.select().where(self.tab.c.nr==number)).fetchone()
+            if result == None:
+                print(f"pokemon nr. {number} doesnt exists in this database")
+                return False
+            self.engine.execute(self.tab.update().where(self.tab.c.nr==number).values(claimedby=name))
         except Exception as e:
             print(e)
+
+    def claimPokemon(self, number, name:str):
+        try:
+            if isinstance(number, list):
+                for pokemon in number:
+                    self.claimOnePokemon(pokemon, name)
+            if isinstance(number, int):
+                self.claimOnePokemon(number, name)
+        except Exception as e:
+            print(e)
+
+    def unClaimOnePokemon(self, number):
+        try:
+            result = self.engine.execute(self.tab.select().where(self.tab.c.nr==number)).fetchone()
+            if result == None:
+                print(f"pokemon nr. {number} doesnt exists in this database")
+                return False
+            self.engine.execute(self.tab.update().where(self.tab.c.nr==number).values(claimedby=None))
+        except Exception as e:
+            print(e)
+
+    def unClaimPokemon(self, number):
+        try:
+            if isinstance(number, list):
+                for pokemon in number:
+                    self.unClaimOnePokemon(pokemon)
+            if isinstance(number, int):
+                self.unClaimOnePokemon(number)
+        except Exception as e:
+            print(e)
+
     def registerPokemon(self, number, shiny=False):
         try:
             if not shiny:
