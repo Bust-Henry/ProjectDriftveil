@@ -24,13 +24,20 @@ def home():
     Returns:
         dict: a dict with all routes and their aliases
     """
+    import json
+    path = os.path.join(os.path.dirname(__file__), os.environ.get("descriptions"))
+    desriptions:dict = json.load(open(path, "r"))
     links = {}
     for rule in app.url_map.iter_rules():
         # Filter out rules we can't navigate to in a browser
         # and rules that require parameters
         if "GET" in rule.methods and has_no_empty_params(rule):
             url = url_for(rule.endpoint, **(rule.defaults or {}))
-            links[url] = rule.alias
+            print(url)
+            if url in desriptions.keys():
+                links[url] = desriptions[url]
+            else:
+                links[url] = rule.alias
     return jsonify(links)
 
 @app.route('/nextPokemon')
