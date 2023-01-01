@@ -1,0 +1,15 @@
+{
+  "/help": "lists all commands and their descriptions",
+  "/nextPokemon": "returns the next uncaught pokemon",
+  "/nextShiny": "returns the next uncaught shiny pokemon",
+  "/add": "adds a pokemon to the list of caught pokemon",
+  "/addShiny": "adds a pokemon to the list of caught shiny pokemon",
+  "/remove": "removes a pokemon from the list of caught pokemon",
+  "/removeShiny": "removes a pokemon from the list of caught shiny pokemon",
+  "/list": "lists all caught pokemon",
+  "/listShiny": "lists all caught shiny pokemon",
+  "/listMissing": "lists all missing pokemon to complete pokedex",
+  "/listMissingShiny": "lists all missing shiny pokemon to complete shiny pokedex",
+  "/update": "updates the database from the pokemon home save file",
+  "/status": "shows the status of the android emulator"
+}
