@@ -47,7 +47,7 @@ def nextShiny():
         return jsonify({"response": "None"})
     return jsonify({"response": re})
 
-@app.route("/pokemon/add/", methods=["POST"])
+@app.route("/add/", methods=["POST"])
 def addPokemon():
     json = request.get_json()
     if "number" in json:
@@ -57,7 +57,7 @@ def addPokemon():
         return jsonify({"response": "Failure"})
     return jsonify({"request": "invalid"})
 
-@app.route("/pokemon/addShiny", methods=["POST"])
+@app.route("/addShiny", methods=["POST"])
 def addShiny():
     json = request.get_json()
     if "number" in json:
@@ -68,7 +68,7 @@ def addShiny():
     return jsonify({"request": "invalid"})
 
 
-@app.route("/pokemon/remove", methods=["POST"])
+@app.route("/remove", methods=["POST"])
 def removePokemon():
     json = request.get_json()
     if "number" in json:
@@ -78,7 +78,7 @@ def removePokemon():
         return jsonify({"response": "Failure"})
     return jsonify({"request": "invalid"})
 
-@app.route("/pokemon/removeShiny", methods=["POST"])
+@app.route("/removeShiny", methods=["POST"])
 def removeShiny():
     json = request.get_json()
     if "number" in json:
@@ -88,27 +88,27 @@ def removeShiny():
         return jsonify({"response": "Failure"})
     return jsonify({"request": "invalid"})
 
-@app.route("/pokemon/list/")
+@app.route("/list")
 def listPokemon():
     result = con.getAllOwned()
     return jsonify(result)
 
-@app.route("/pokemon/listShiny/")
+@app.route("/listShiny")
 def listShinyPokemon():
     result = con.getAllOwned(True)
     return jsonify(result)
 
-@app.route("/pokemon/listMissing/")
+@app.route("/listMissing")
 def listMissingPokemon():
     result = con.getAllMissing()
     return jsonify(result)
 
-@app.route("/pokemon/listMissingShiny/")
+@app.route("/listMissingShiny")
 def listMissingShinyPokemon():
     result = con.getAllMissing(True)
     return jsonify(result)
 
-@app.route("/pokemon/update/")
+@app.route("/update")
 def updatePokemon():
     try:
         controller = BlueStackController()
