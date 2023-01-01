@@ -56,13 +56,12 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/pokemon/add",
+					"raw": "localhost:8080/add",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"pokemon",
 						"add"
 					]
 				}
@@ -84,13 +83,12 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/pokemon/addShiny",
+					"raw": "localhost:8080/addShiny",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"pokemon",
 						"addShiny"
 					]
 				}
@@ -112,13 +110,12 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/pokemon/remove",
+					"raw": "localhost:8080/remove",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"pokemon",
 						"remove"
 					]
 				}
@@ -140,14 +137,121 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/pokemon/removeShiny",
+					"raw": "localhost:8080/removeShiny",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"pokemon",
 						"removeShiny"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/status",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/update",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "help",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "claimPokemon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": \"henry\",\r\n    \"pokemon\": [12, 31, 100, 10]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/claimPokemon",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"claimPokemon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unClaimPokemon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[12, 31, 100, 10]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/unClaimPokemon",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unClaimPokemon"
 					]
 				}
 			},
