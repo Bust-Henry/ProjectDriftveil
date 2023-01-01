@@ -4,3 +4,4 @@ __pycache__
 .env.secret
 .vscode
 byte
+temp.json
