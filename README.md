@@ -10,7 +10,8 @@ Initially I started this project to build a living dex with my friends, but ther
 
 ## What is included in this project?
 - A database that contains all pokemon you have in your pokemon home account
-- A bot that can read any changes you make to your collection of pokemon
+- A bot that can synchronizes any changes you make to your collection of pokemon via websocket connection
+- A websocket that receives the pokemon home save data and rebuilds the database with all the pokemon in your home account
 - A webserver (flask server) that hosts a simple [api](https://github.com/Bust-Henry/ProjectDriftveil/wiki/API) to retrieve or set data in your database
 - A [discordbot](https://github.com/Bust-Henry/ProjectDriftveil/wiki/Discord-Bot) that wraps this api
 
