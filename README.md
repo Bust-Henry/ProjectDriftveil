@@ -2,8 +2,9 @@
 
 **Attention!**
 **This project is still in development and not even closed to be finished. So dont expect it to work right out of the box!**
+**This project is currently on hold, until the pokemon sv pokemon home compatibility is released!**
 
-## Project discription
+## Project description
 This project was created to share your Pokemon Home account with your friendgroup in order to collect, build competetive teams and complete challenges together!
 
 Initially I started this project to build a living dex with my friends, but there are many more things you can do with this application. If you want to share pokemon with your friends or maybe even with a community, you came to the right place.
